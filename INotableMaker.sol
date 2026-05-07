@@ -2,20 +2,20 @@
 pragma solidity ^0.8.30;
 
 /**
- * @title IMimicMaker
- * @notice Clone-factory surface of Mimicry. One clone exists per
+ * @title INotableMaker
+ * @notice Clone-factory surface of Notable. One clone exists per
  *         `(original, symbol)` pair, deployed via CREATE2; {made}
  *         predicts the address without deploying. Lets callers depend
  *         on the factory without pulling in V4 imports.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
-interface IMimicMaker {
+interface INotableMaker {
     /**
      * @notice Emitted when {make} deploys a new clone.
      * @param  clone    The clone's deterministic CREATE2 address.
-     * @param  original The reference token the clone's mimics are pegged
+     * @param  original The reference token the clone's issues are pegged
      *                  against (`address(0)` for native ETH).
-     * @param  symbol   The shared symbol every mimic minted by the clone
+     * @param  symbol   The shared symbol every issue minted by the clone
      *                  carries.
      */
     event Make(address indexed clone, address indexed original, string symbol);
