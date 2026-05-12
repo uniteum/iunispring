@@ -21,12 +21,6 @@ interface INotableMaker {
     event Make(address indexed clone, address indexed original, string symbol);
 
     /**
-     * @notice Thrown when an initializer is invoked by anyone other
-     *         than the prototype.
-     */
-    error Unauthorized();
-
-    /**
      * @notice Predict the deterministic clone address for
      *         `(original, symbol)`.
      * @return exists True if the clone is already deployed.
