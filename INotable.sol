@@ -33,9 +33,18 @@ interface INotable {
     function symbol() external view returns (string memory);
 
     /**
-     * @notice Predict the deterministic address of the issue the clone
-     *         for `(original, symbol)` would mint with `name`. Works
+     * @notice Predict the deterministic address of an issue minted by
+     *         the clone for `(original, symbol)` with `name`. Works
      *         whether or not the clone is already deployed.
+     * @param  original The reference token, accepted under the same
+     *                  rules as {INotableMaker.make} / {INotableMaker.made}:
+     *                  `address(0)` is native ETH; an {IAddressLookup}
+     *                  resolves through `value()`; any other address is
+     *                  the token itself.
+     * @param  symbol   Shared symbol every issue of the clone carries.
+     * @param  name     Per-issue name.
+     * @return exists   True if the issue token is already deployed.
+     * @return home     The deterministic issue address.
      */
     function issued(address original, string calldata symbol, string calldata name)
         external
@@ -44,15 +53,26 @@ interface INotable {
 
     /**
      * @notice Predict the deterministic issue address for `name` under
-     *         this instance's stored `(original, symbol)`.
+     *         this instance's stored `(original, symbol)`. Convenience
+     *         wrapper for callers that already hold the clone (or the
+     *         prototype): the CREATE2 maker for the issue is the
+     *         instance itself, so no salt rederivation is needed.
      */
     function issued(string calldata name) external view returns (bool exists, address home);
 
     /**
      * @notice Mint a fresh issue ERC-20 with `name`, this instance's
      *         stored `symbol`, and decimals + supply derived from
-     *         `original`. Idempotent — returns the existing issue if
-     *         one with `name` was already minted by this instance.
+     *         `original`, and seat its entire supply as a single-tick
+     *         segment on an {IPlacer}. Idempotent — returns the
+     *         existing token if an issue with `name` was already minted
+     *         by this instance. Callable on the prototype (mints under
+     *         the proto pair `(native ETH, "1x<native>")`) or on any
+     *         clone (mints under that clone's pair).
+     * @param  name  Per-issue name. Must vary across calls to mint
+     *               distinct issues under this instance's
+     *               `(original, symbol)`.
+     * @return token The minted (or existing) issue ERC-20.
      */
     function issue(string calldata name) external returns (IERC20Metadata token);
 }
