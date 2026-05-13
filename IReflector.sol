@@ -4,14 +4,14 @@ pragma solidity ^0.8.34;
 import {IERC20Metadata} from "ierc20/IERC20Metadata.sol";
 
 /**
- * @title INotable
- * @notice Issue-token-factory surface of a Notable instance. Each clone
+ * @title IReflector
+ * @notice Issue-token-factory surface of a Reflector instance. Each clone
  *         (and the prototype itself for the native pair) issues per-name
  *         ERC-20s under its stored `(original, symbol)`. Lets callers
- *         depend on a Notable issuer without pulling in V4 imports.
+ *         depend on a Reflector issuer without pulling in V4 imports.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
-interface INotable {
+interface IReflector {
     /**
      * @notice Emitted when this instance issues a fresh token via {issue}.
      * @param  clone The instance that issued the token.
@@ -37,7 +37,7 @@ interface INotable {
      *         the clone for `(original, symbol)` with `name`. Works
      *         whether or not the clone is already deployed.
      * @param  original The reference token, accepted under the same
-     *                  rules as {INotableMaker.make} / {INotableMaker.made}:
+     *                  rules as {IReflectorMaker.make} / {IReflectorMaker.made}:
      *                  `address(0)` is native ETH; an {IAddressLookup}
      *                  resolves through `value()`; any other address is
      *                  the token itself.

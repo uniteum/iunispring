@@ -2,14 +2,14 @@
 pragma solidity ^0.8.34;
 
 /**
- * @title INotableMaker
- * @notice Clone-factory surface of Notable. One clone exists per
+ * @title IReflectorMaker
+ * @notice Clone-factory surface of Reflector. One clone exists per
  *         `(original, symbol)` pair, deployed via CREATE2; {made}
  *         predicts the address without deploying. Lets callers depend
  *         on the factory without pulling in V4 imports.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
-interface INotableMaker {
+interface IReflectorMaker {
     /**
      * @notice Emitted when {make} deploys a new clone.
      * @param  clone    The clone's deterministic CREATE2 address.
@@ -58,13 +58,13 @@ interface INotableMaker {
         returns (bool exists, address home, bytes32 salt);
 
     /**
-     * @notice Deploy a deterministic Notable clone for
+     * @notice Deploy a deterministic Reflector clone for
      *         `(original, symbol)`. Idempotent — returns the existing
      *         clone if already deployed. For the proto pair
      *         `(native ETH, proto-symbol)` this returns the prototype
      *         directly (no clone is deployed; the prototype IS the
      *         factory for that pair). The clone issues tokens via
-     *         {INotable.issue}.
+     *         {IReflector.issue}.
      * @param  original The reference token to peg against. `address(0)`
      *                  selects native ETH (issues minted with 18
      *                  decimals); an {IAddressLookup} resolves to its
