@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
-import {IERC20Metadata} from "ierc20/IERC20Metadata.sol";
-
 /**
  * @title IReflector
  * @notice Issue-token-factory surface of a Reflector instance. Each clone
@@ -18,7 +16,7 @@ interface IReflector {
      * @param  token The newly issued ERC-20.
      * @param  name  The name carried by the token.
      */
-    event Issue(address indexed clone, IERC20Metadata indexed token, string name);
+    event Issue(address indexed clone, address indexed token, string name);
 
     /**
      * @notice The reference token every issue minted by this instance is
@@ -74,5 +72,5 @@ interface IReflector {
      *               `(original, symbol)`.
      * @return token The minted (or existing) issue ERC-20.
      */
-    function issue(string calldata name) external returns (IERC20Metadata token);
+    function issue(string calldata name) external returns (address token);
 }
