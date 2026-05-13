@@ -30,6 +30,16 @@ interface IReflectorMaker {
     error ProtoPairReserved();
 
     /**
+     * @notice Thrown when a peg supplied as an {IAddressLookup} resolves
+     *         to `address(0)` — i.e. the underlying token is not deployed
+     *         on the current chain. Surfaced by both {made} and {make}
+     *         so the read and write views fail symmetrically rather than
+     *         silently substituting native ETH.
+     * @param  lookup The lookup contract whose `value()` returned zero.
+     */
+    error UnmappedLookup(address lookup);
+
+    /**
      * @notice Predict the deterministic address of a clone for
      *         `(peg, symbol)`. For the proto pair
      *         `(native ETH, proto-symbol)` this returns
