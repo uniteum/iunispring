@@ -5,7 +5,7 @@ pragma solidity ^0.8.34;
  * @title IReflector
  * @notice Issue-token-factory surface of a Reflector instance. Each clone
  *         (and the prototype itself for the native pair) issues per-name
- *         ERC-20s under its stored `(original, symbol)`. Lets callers
+ *         ERC-20s under its stored `(peg, symbol)`. Lets callers
  *         depend on a Reflector issuer without pulling in V4 imports.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
@@ -22,7 +22,7 @@ interface IReflector {
      * @notice The reference token every issue minted by this instance is
      *         pegged against (`address(0)` for native ETH).
      */
-    function original() external view returns (address);
+    function peg() external view returns (address);
 
     /**
      * @notice The shared symbol carried by every issue minted by this
@@ -32,9 +32,9 @@ interface IReflector {
 
     /**
      * @notice Predict the deterministic address of an issue minted by
-     *         the clone for `(original, symbol)` with `name`. Works
+     *         the clone for `(peg, symbol)` with `name`. Works
      *         whether or not the clone is already deployed.
-     * @param  original The reference token, accepted under the same
+     * @param  peg      The reference token, accepted under the same
      *                  rules as {IReflectorMaker.make} / {IReflectorMaker.made}:
      *                  `address(0)` is native ETH; an {IAddressLookup}
      *                  resolves through `value()`; any other address is
@@ -44,14 +44,14 @@ interface IReflector {
      * @return exists   True if the issue token is already deployed.
      * @return home     The deterministic issue address.
      */
-    function issued(address original, string calldata symbol, string calldata name)
+    function issued(address peg, string calldata symbol, string calldata name)
         external
         view
         returns (bool exists, address home);
 
     /**
      * @notice Predict the deterministic issue address for `name` under
-     *         this instance's stored `(original, symbol)`. Convenience
+     *         this instance's stored `(peg, symbol)`. Convenience
      *         wrapper for callers that already hold the clone (or the
      *         prototype): the CREATE2 maker for the issue is the
      *         instance itself, so no salt rederivation is needed.
@@ -61,7 +61,7 @@ interface IReflector {
     /**
      * @notice Mint a fresh issue ERC-20 with `name`, this instance's
      *         stored `symbol`, and decimals + supply derived from
-     *         `original`, and seat its entire supply as a single-tick
+     *         `peg`, and seat its entire supply as a single-tick
      *         segment on an {IPlacer}. Idempotent — returns the
      *         existing token if an issue with `name` was already minted
      *         by this instance. Callable on the prototype (mints under
@@ -69,7 +69,7 @@ interface IReflector {
      *         clone (mints under that clone's pair).
      * @param  name  Per-issue name. Must vary across calls to mint
      *               distinct issues under this instance's
-     *               `(original, symbol)`.
+     *               `(peg, symbol)`.
      * @return token The minted (or existing) issue ERC-20.
      */
     function issue(string calldata name) external returns (address token);
