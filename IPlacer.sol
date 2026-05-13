@@ -3,9 +3,12 @@ pragma solidity ^0.8.34;
 
 /**
  * @title IPlacer
- * @notice Minimal placer surface used by callers that only seat
- *         positions and never read fee/clone state. Lets callers
- *         depend on a placer without pulling in V4 imports.
+ * @notice Sell a token at prices you choose. {offer} partitions a
+ *         price range into segments and lists the token's supply
+ *         across them, paired against a quote currency. This is the
+ *         slice callers need when they only seat positions; the full
+ *         contract also tracks fees and clone state, which aren't
+ *         exposed here.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IPlacer {
