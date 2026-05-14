@@ -3,10 +3,11 @@ pragma solidity ^0.8.34;
 
 /**
  * @title IReflector
- * @notice Issue-token-factory surface of a Reflector instance. Each clone
- * (and the prototype itself for the native pair) issues per-name
- * ERC-20s under its stored `(peg, symbol)`. Lets callers
- * depend on a Reflector issuer without pulling in V4 imports.
+ * @notice Mint a fresh ERC-20 under a fixed `(peg, symbol)`. Each
+ * Reflector instance — the prototype for the native pair,
+ * or a clone for any other pair — exposes {issue}, which
+ * mints one token per name with decimals and supply derived
+ * from `peg`.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IReflector {
@@ -43,7 +44,7 @@ interface IReflector {
     /**
      * @notice Mint a fresh issue ERC-20 with `name`, this instance's
      * stored `symbol`, and decimals + supply derived from
-     * `peg`, and seat its entire supply as a single-tick
+     * `peg`, and list its entire supply as a single-tick
      * segment on an {IPlacer}. Idempotent — returns the
      * existing token if an issue with `name` was already minted
      * by this instance. Callable on the prototype (mints under

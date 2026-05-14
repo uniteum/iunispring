@@ -2,7 +2,7 @@
 pragma solidity ^0.8.34;
 
 /**
- * @dev Record of a single seated liquidity position in a pool. The
+ * @dev Record of a single liquidity position in a pool. The
  * registry of these is the data structure {IFeeTaker} operates on.
  */
 struct Position {
@@ -35,10 +35,11 @@ struct Position {
 
 /**
  * @title IFeeTaker
- * @notice Surface for callers that work with seated positions and the
- * fees they accrue: enumerate the registry, forecast pending
- * fees, and claim them. Centered on {take} as the operational
- * verb; the registry-view methods exist to support it.
+ * @notice Pull accrued swap fees from a contract's pool positions
+ * and read the fee state. {take} pulls fees on a batch of
+ * position ids; {untaken} previews what {take} would
+ * transfer now; {positionsCount} and {positionsSlice}
+ * enumerate the registry.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IFeeTaker {
@@ -57,7 +58,7 @@ interface IFeeTaker {
     error UnknownPosition(uint256 positionId);
 
     /**
-     * @notice The number of seated positions.
+     * @notice The number of positions in the registry.
      */
     function positionsCount() external view returns (uint256);
 

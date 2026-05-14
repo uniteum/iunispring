@@ -3,10 +3,10 @@ pragma solidity ^0.8.34;
 
 /**
  * @title IReflectorMaker
- * @notice Clone-factory surface of Reflector. One clone exists per
- * `(peg, symbol)` pair, deployed via CREATE2; {made}
- * predicts the address without deploying. Lets callers depend
- * on the factory without pulling in V4 imports.
+ * @notice Deploy a Reflector clone for a given `(peg, symbol)`. One
+ * clone exists per pair, deployed deterministically via
+ * CREATE2; {make} deploys (idempotent) and {made} predicts
+ * the address without deploying.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IReflectorMaker {

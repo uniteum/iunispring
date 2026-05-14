@@ -5,18 +5,15 @@ pragma solidity ^0.8.34;
  * @title IPlacer
  * @notice Sell a token at prices you choose. {offer} partitions a
  * price range into segments and lists the token's supply
- * across them, paired against a quote currency. This is the
- * slice callers need when they only seat positions; the full
- * contract also tracks fees and clone state, which aren't
- * exposed here.
+ * across them, paired against a quote currency.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IPlacer {
     /**
-     * @notice Emitted when an {offer} call seats a contiguous batch of
+     * @notice Emitted when an {offer} call opens a contiguous batch of
      * positions.
      * @param offerer The address that called {offer}.
-     * @param token The currency whose supply seats the positions
+     * @param token The currency listed across the positions
      * (`address(0)` for native ETH).
      * @param quote The quote currency (`address(0)` for native ETH).
      * @param firstPositionId Index of the first position in the batch.
@@ -58,7 +55,7 @@ interface IPlacer {
 
     /**
      * @notice Thrown when {offer} is called with a native-ETH token. Only
-     * ERC-20 tokens may seat positions; the quote side may still be
+     * ERC-20 tokens may be listed; the quote side may still be
      * native ETH.
      */
     error TokenIsNative();
@@ -66,7 +63,7 @@ interface IPlacer {
     /**
      * @notice Offer `token` for sale at the ticks you set, paired against
      * `quote`. The `ticks` array partitions a "token/quote" price
-     * range into N = `amounts.length` segments; `amounts[i]` seats
+     * range into N = `amounts.length` segments; `amounts[i]` fills
      * the segment bounded by `ticks[i]` and `ticks[i + 1]`
      * single-sided in `token`. Trading fees accrue to the
      * Fountain's owner. The caller must have approved the Fountain
@@ -97,7 +94,7 @@ interface IPlacer {
      * absorbed; an above-`ticks[0]` one can be undone by anyone
      * (no liquidity in the path) by walking spot back down with a
      * 1-wei swap before re-calling {offer}.
-     * @param token The currency whose supply seats the positions
+     * @param token The currency listed across the positions
      * (`address(0)` for native ETH).
      * @param quote The quote currency (`address(0)` for native ETH).
      * @param ticks Strictly ascending ticks in "token/quote" price

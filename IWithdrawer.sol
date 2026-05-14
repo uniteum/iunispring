@@ -3,9 +3,9 @@ pragma solidity ^0.8.34;
 
 /**
  * @title IWithdrawer
- * @notice Surface for pulling a currency balance held by a contract out
- * to its owner. Centered on {withdraw}; {Withdrawn} lets observers
- * track how much has been pulled in each currency over time.
+ * @notice Pull a contract's currency balance out to its owner.
+ * {withdraw} sends `amount` of `currency` to the owner
+ * (owner-only); {Withdrawn} logs each pull.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IWithdrawer {

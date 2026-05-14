@@ -3,15 +3,11 @@ pragma solidity ^0.8.34;
 
 /**
  * @title IOwnableMaker
- * @notice Shape of an "ownable clone" factory: one clone per
- * `(owner, variant)` pair, the produced clone is `Ownable`
- * and its owner is the `owner` argument passed to {make}.
- * {make} is permissionless — anyone can deploy a clone for
- * any third-party owner. {made} predicts the deterministic
- * CREATE2 address without deploying. The pattern names the
- * role rather than any specific contract; callers that want
- * to interact with any ownable-maker through a common shape
- * cast the address to this interface.
+ * @notice Permissionless factory of `Ownable` clones — one per
+ * `(owner, variant)`. Anyone calls {make} to deploy a clone
+ * owned by an arbitrary address; the clone's owner is the
+ * `owner` argument, not `msg.sender`. {made} predicts the
+ * deterministic CREATE2 address without deploying.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IOwnableMaker {
