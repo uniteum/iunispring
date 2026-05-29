@@ -20,6 +20,14 @@ interface IReflector {
     event Issue(address indexed clone, address indexed token, string name);
 
     /**
+     * @notice Thrown by {issue} when the caller-supplied `supply` exceeds
+     * the instance's {maxSupply} cap.
+     * @param supply The requested supply.
+     * @param maxSupply The configured cap.
+     */
+    error SupplyExceedsMaxSupply(uint256 supply, uint128 maxSupply);
+
+    /**
      * @notice The reference token every issue minted by this instance is
      * pegged against (`address(0)` for native ETH).
      */
@@ -32,8 +40,16 @@ interface IReflector {
     function symbol() external view returns (string memory);
 
     /**
+     * @notice Hard cap on the supply a caller may request through {issue}.
+     * Sized to fit V4's `maxLiquidityPerTick` for a single-tick
+     * seat at `tickSpacing = 1`, so any `supply <= maxSupply`
+     * is guaranteed to land in the pool.
+     */
+    function maxSupply() external view returns (uint128);
+
+    /**
      * @notice Predict the deterministic issue address for
-     * `(name, variant)` under this instance's stored
+     * `(name, variant, supply)` under this instance's stored
      * `(peg, symbol)`. The CREATE2 maker for the issue is the
      * instance itself; callers that hold only `(peg, symbol)`
      * resolve the clone via {IReflectorMaker.made} first, then
@@ -42,24 +58,33 @@ interface IReflector {
      * @param variant Vanity-mining nonce mixed into the issue's CREATE2
      * salt; different variants for the same `name` yield
      * different issue addresses with identical metadata.
+     * @param supply Raw token supply the caller would mint; mixed into
+     * the issue's CREATE2 salt, so the same `(name, variant)`
+     * at a different `supply` predicts a different address.
      */
-    function issued(string calldata name, uint256 variant) external view returns (bool exists, address home);
+    function issued(string calldata name, uint256 variant, uint256 supply)
+        external
+        view
+        returns (bool exists, address home);
 
     /**
      * @notice Mint a fresh issue ERC-20 with `name`, this instance's
-     * stored `symbol`, and decimals + supply derived from
-     * `peg`, and list its entire supply as a single-tick
-     * segment on an {IPlacer}. Idempotent for a given
-     * `(name, variant)` — returns the existing token if one
-     * was already minted under those inputs. Callable on the
-     * prototype (mints under the proto pair
+     * stored `symbol`, decimals derived from `peg`, and the
+     * caller-supplied `supply`. The entire supply is listed as
+     * a single-tick segment on an {IPlacer}. Idempotent for a
+     * given `(name, variant, supply)` — returns the existing
+     * token if one was already minted under those inputs.
+     * Callable on the prototype (mints under the proto pair
      * `(native ETH, "1x<native>")`) or on any clone (mints
-     * under that clone's pair).
+     * under that clone's pair). Reverts with
+     * {SupplyExceedsMaxSupply} when `supply > maxSupply`.
      * @param name Per-issue name.
      * @param variant Vanity-mining nonce mixed into the issue's CREATE2
      * salt; different variants for the same `name` yield
      * different issue addresses with identical metadata.
+     * @param supply Raw token supply to mint and seat in the pool. Must
+     * not exceed {maxSupply}.
      * @return token The minted (or existing) issue ERC-20.
      */
-    function issue(string calldata name, uint256 variant) external returns (address token);
+    function issue(string calldata name, uint256 variant, uint256 supply) external returns (address token);
 }
