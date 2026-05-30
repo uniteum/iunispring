@@ -49,20 +49,20 @@ interface IReflector {
 
     /**
      * @notice Predict the deterministic issue address for
-     * `(name, variant, supply)` under this instance's stored
+     * `(name, supply, variant)` under this instance's stored
      * `(peg, symbol)`. The CREATE2 maker for the issue is the
      * instance itself; callers that hold only `(peg, symbol)`
      * resolve the clone via {IReflectorMaker.made} first, then
      * call {issued} on the result.
      * @param name Per-issue name.
-     * @param variant Vanity-mining nonce mixed into the issue's CREATE2
-     * salt; different variants for the same `name` yield
-     * different issue addresses with identical metadata.
      * @param supply Raw token supply the caller would mint; mixed into
      * the issue's CREATE2 salt, so the same `(name, variant)`
      * at a different `supply` predicts a different address.
+     * @param variant Vanity-mining nonce mixed into the issue's CREATE2
+     * salt; different variants for the same `name` yield
+     * different issue addresses with identical metadata.
      */
-    function issued(string calldata name, uint256 variant, uint256 supply)
+    function issued(string calldata name, uint256 supply, uint256 variant)
         external
         view
         returns (bool exists, address home);
@@ -72,19 +72,19 @@ interface IReflector {
      * stored `symbol`, decimals derived from `peg`, and the
      * caller-supplied `supply`. The entire supply is listed as
      * a single-tick segment on an {IPlacer}. Idempotent for a
-     * given `(name, variant, supply)` — returns the existing
+     * given `(name, supply, variant)` — returns the existing
      * token if one was already minted under those inputs.
      * Callable on the prototype (mints under the proto pair
      * `(native ETH, "1x<native>")`) or on any clone (mints
      * under that clone's pair). Reverts with
      * {SupplyExceedsMaxSupply} when `supply > maxSupply`.
      * @param name Per-issue name.
+     * @param supply Raw token supply to mint and seat in the pool. Must
+     * not exceed {maxSupply}.
      * @param variant Vanity-mining nonce mixed into the issue's CREATE2
      * salt; different variants for the same `name` yield
      * different issue addresses with identical metadata.
-     * @param supply Raw token supply to mint and seat in the pool. Must
-     * not exceed {maxSupply}.
      * @return token The minted (or existing) issue ERC-20.
      */
-    function issue(string calldata name, uint256 variant, uint256 supply) external returns (address token);
+    function issue(string calldata name, uint256 supply, uint256 variant) external returns (address token);
 }
