@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.34;
 
 /**
  * @title IPoolConfig
  * @notice Read-only view of a pool's parameters — the values needed to
- *         construct a {PoolKey} or read pool state from the
- *         {PoolManager}. Typically used by off-chain scripts.
+ * construct a {PoolKey} or read pool state from the
+ * {PoolManager}. Typically used by off-chain scripts.
  * @author Paul Reinholdtsen (reinholdtsen.eth)
  */
 interface IPoolConfig {
